@@ -75,3 +75,33 @@ def list_item(stdscr):
                     stdscr.addstr(2, 0, "Press any key to go back.")
                     stdscr.refresh()
                     stdscr.getch()
+
+def search_item(stdscr):
+    curses.curs_set(0)
+    stdscr.clear()
+    
+    while True:
+        stdscr.refresh()
+        stdscr.addstr(0, 0, "What is the name of the item you are searching for: ")
+        stdscr.refresh()
+        curses.echo()
+        search_item_var = stdscr.getstr(1, 0).decode().strip() 
+        curses.noecho()
+
+        if search_item_var != "":
+            with open('inventory.csv', "r") as file:
+                for line_number, line in enumerate(file):
+                    if search_item_var in line:
+                        stdscr.clear()
+                        stdscr.addstr(f"{line.strip()}")
+                        stdscr.addstr(2, 0, "Press any key to go back.")
+                        stdscr.refresh()
+                        stdscr.getch()
+                        return
+        else:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Please enter an acceptible input.")
+            stdscr.addstr(2, 0, "Press any key to go back.")
+            stdscr.refresh()
+            stdscr.getch()
+            stdscr.clear()

@@ -7,9 +7,9 @@ def main_menu(stdscr):
     curses.curs_set(0)
     stdscr.clear()
 
-    choices = ["Add Item", "List Item", "Exit"]
+    choices = ["Add Item", "List Item", "Search Item","Exit"]
     current_row = 0
-
+    
     while True:
         stdscr.clear()
 
@@ -34,6 +34,9 @@ def main_menu(stdscr):
             elif choices[current_row] == "List Item":
                 stdscr.clear()
                 commands.list_item(stdscr)
+            elif choices[current_row] == "Search Item":
+                stdscr.clear()
+                commands.search_item(stdscr)
             elif choices[current_row] == "Exit":
                 break
 
