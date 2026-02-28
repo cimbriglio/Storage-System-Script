@@ -6,11 +6,26 @@ import curses
 def main_menu(stdscr):
     curses.curs_set(0)
     stdscr.clear()
-    choices = ["Add Item", "List Item", "Search Item","Exit"]
+    choices = ["Add Item","Remove Item", "List Item", "Search Item","Exit"]
     current_row = 0
-    
+    stdscr.bkgd(' ', curses.color_pair(1))
+
     while True:
 
+        if curses.has_colors():
+            curses.start_color()
+            # Define color pair 1: Yellow foreground on Red background
+            curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)
+            # Define color pair 2: Green foreground on Green background (useful for a block highlight effect)
+            curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_RED)
+            curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_CYAN)
+            
+            stdscr.bkgd(' ', curses.color_pair(1))
+
+        h, w = stdscr.getmaxyx()
+        
+
+        
         with open('inventory.csv', 'r+') as file:
             inventory_content = file.read()
             file.seek(0)
@@ -18,10 +33,14 @@ def main_menu(stdscr):
         stdscr.clear()
 
         for idx, choice in enumerate(choices):
+            text = f"> {choice}" if idx == current_row else f"  {choice}"
+            x = w // 2 - len(text) // 2          # horizontal center
+            y = h // 2 - len(choices) // 2 + idx # vertical center block
+
             if idx == current_row:
-                stdscr.addstr(idx, 0, f"> {choice}", curses.A_REVERSE)
+                stdscr.addstr(y, x, text, curses.A_REVERSE | curses.A_BOLD | curses.color_pair(2))
             else:
-                stdscr.addstr(idx, 0, f"  {choice}")
+                stdscr.addstr(y, x, text, curses.A_BOLD | curses.color_pair(2))
 
         stdscr.refresh()
 
@@ -36,6 +55,10 @@ def main_menu(stdscr):
                 stdscr.clear()
                 time.sleep(0.25)
                 commands.add_item(stdscr)
+            elif choices[current_row] == "Remove Item":
+                stdscr.clear()
+                time.sleep(0.25)
+                commands.remove_item(stdscr)
             elif choices[current_row] == "List Item":
                 stdscr.clear()
                 time.sleep(0.25)
