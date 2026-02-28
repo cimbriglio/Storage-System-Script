@@ -3,7 +3,6 @@ import curses
 
 
 
-
 def add_item(stdscr):
     while True:
         item = ""
@@ -76,7 +75,7 @@ def list_item(stdscr):
     current_row = 0
     while True:
        
-        
+
         curses.curs_set(0)
         stdscr.clear()
         stdscr.refresh()
@@ -85,19 +84,24 @@ def list_item(stdscr):
             list_all = [line.strip() for line in file]
             list_all.append("Exit")
 
+            h, w = stdscr.getmaxyx()
+            max_rows = h - 1
+            start_line = max(0, current_row - max_rows +1)
+            item_listed = list_all[start_line:start_line + max_rows]
             stdscr.addstr(0, 0, "ID - Name", curses.A_BOLD | curses.color_pair(2))
-            for idx, choice in enumerate(list_all):
-                if idx == current_row:
-                    idx += 1
-                    stdscr.addstr(idx, 0, f"> {choice}", curses.A_REVERSE | curses.A_BOLD | curses.color_pair(2))
+            for idx, choice in enumerate(item_listed):
+                row = idx + 1
+                actual_index = start_line + idx
+
+                if actual_index == current_row:
+                    stdscr.addstr(row, 0, f"> {choice}"[:w-1], curses.A_REVERSE | curses.A_BOLD | curses.color_pair(2))
                 else:
-                    idx += 1
-                    stdscr.addstr(idx, 0, f"  {choice}", curses.A_BOLD | curses.color_pair(2))
+                    stdscr.addstr(row, 0, f"  {choice}"[:w-1], curses.A_BOLD | curses.color_pair(2))
                     
 
             key = stdscr.getch()
 
-            if key == curses.KEY_UP and current_row > -1:
+            if key == curses.KEY_UP and current_row > 0:
                 current_row -= 1
             elif key == curses.KEY_DOWN and current_row < len(list_all) - 1:
                 current_row += 1
